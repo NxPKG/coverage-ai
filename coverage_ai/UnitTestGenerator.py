@@ -46,8 +46,8 @@ class UnitTestGenerator:
             coverage_type (str, optional): The type of coverage report. Defaults to "cobertura".
             desired_coverage (int, optional): The desired coverage percentage. Defaults to 90.
             additional_instructions (str, optional): Additional instructions for test generation. Defaults to an empty string.
-            use_report_coverage_feature_flag (bool, optional): Setting this to True considers the coverage of all the files in the coverage report. 
-                                                               This means we consider a test as good if it increases coverage for a different 
+            use_report_coverage_feature_flag (bool, optional): Setting this to True considers the coverage of all the files in the coverage report.
+                                                               This means we consider a test as good if it increases coverage for a different
                                                                file other than the source file. Defaults to False.
 
         Returns:
@@ -144,7 +144,7 @@ class UnitTestGenerator:
             file_path=self.code_coverage_report_path,
             src_file_path=self.source_file_path,
             coverage_type=self.coverage_type,
-            use_report_coverage_feature_flag=self.use_report_coverage_feature_flag
+            use_report_coverage_feature_flag=self.use_report_coverage_feature_flag,
         )
 
         # Use the process_coverage_report method of CoverageProcessor, passing in the time the test command was executed
@@ -160,30 +160,34 @@ class UnitTestGenerator:
                 total_lines_missed = 0
                 total_lines = 0
                 for key in file_coverage_dict:
-                    lines_covered, lines_missed, percentage_covered = (
-                        file_coverage_dict[key]
-                    )
+                    (
+                        lines_covered,
+                        lines_missed,
+                        percentage_covered,
+                    ) = file_coverage_dict[key]
                     total_lines_covered += len(lines_covered)
                     total_lines_missed += len(lines_missed)
                     total_lines += len(lines_covered) + len(lines_missed)
                     if key == self.source_file_path:
                         self.last_source_file_coverage = percentage_covered
                     if key not in self.last_coverage_percentages:
-                        self.last_coverage_percentages[key] =  0
+                        self.last_coverage_percentages[key] = 0
                     self.last_coverage_percentages[key] = percentage_covered
                 percentage_covered = total_lines_covered / total_lines
 
                 self.logger.info(
                     f"Total lines covered: {total_lines_covered}, Total lines missed: {total_lines_missed}, Total lines: {total_lines}"
                 )
-                self.logger.info(    
+                self.logger.info(
                     f"coverage: Percentage {round(percentage_covered * 100, 2)}%"
                 )
             else:
-                lines_covered, lines_missed, percentage_covered = (
-                    coverage_processor.process_coverage_report(
-                        time_of_test_command=time_of_test_command
-                    )
+                (
+                    lines_covered,
+                    lines_missed,
+                    percentage_covered,
+                ) = coverage_processor.process_coverage_report(
+                    time_of_test_command=time_of_test_command
                 )
 
             # Process the extracted coverage metrics
@@ -314,9 +318,11 @@ class UnitTestGenerator:
                 prompt_headers_indentation = self.prompt_builder.build_prompt_custom(
                     file="analyze_suite_test_headers_indentation"
                 )
-                response, prompt_token_count, response_token_count = (
-                    self.ai_caller.call_model(prompt=prompt_headers_indentation)
-                )
+                (
+                    response,
+                    prompt_token_count,
+                    response_token_count,
+                ) = self.ai_caller.call_model(prompt=prompt_headers_indentation)
                 self.total_input_token_count += prompt_token_count
                 self.total_output_token_count += response_token_count
                 tests_dict = load_yaml(response)
@@ -339,9 +345,11 @@ class UnitTestGenerator:
                 prompt_test_insert_line = self.prompt_builder.build_prompt_custom(
                     file="analyze_suite_test_insert_line"
                 )
-                response, prompt_token_count, response_token_count = (
-                    self.ai_caller.call_model(prompt=prompt_test_insert_line)
-                )
+                (
+                    response,
+                    prompt_token_count,
+                    response_token_count,
+                ) = self.ai_caller.call_model(prompt=prompt_test_insert_line)
                 self.total_input_token_count += prompt_token_count
                 self.total_output_token_count += response_token_count
                 tests_dict = load_yaml(response)
@@ -393,9 +401,11 @@ class UnitTestGenerator:
         if dry_run:
             response = "```def test_something():\n    pass```\n```def test_something_else():\n    pass```\n```def test_something_different():\n    pass```"
         else:
-            response, prompt_token_count, response_token_count = (
-                self.ai_caller.call_model(prompt=self.prompt, max_tokens=max_tokens)
-            )
+            (
+                response,
+                prompt_token_count,
+                response_token_count,
+            ) = self.ai_caller.call_model(prompt=self.prompt, max_tokens=max_tokens)
             self.total_input_token_count += prompt_token_count
             self.total_output_token_count += response_token_count
         try:
@@ -421,7 +431,9 @@ class UnitTestGenerator:
 
         return tests_dict
 
-    def validate_test(self, generated_test: dict, generated_tests_dict: dict, num_attempts=1):
+    def validate_test(
+        self, generated_test: dict, generated_tests_dict: dict, num_attempts=1
+    ):
         """
         Validate a generated test by inserting it into the test file, running the test, and checking for pass/fail.
 
@@ -483,7 +495,6 @@ class UnitTestGenerator:
                     )
             test_code_indented = "\n" + test_code_indented.strip("\n") + "\n"
             if test_code_indented and relevant_line_number_to_insert_tests_after:
-
                 # Step 1: Insert the generated test to the relevant line in the test file
                 additional_imports_lines = ""
                 with open(self.test_file_path, "r") as test_file:
@@ -526,12 +537,16 @@ class UnitTestGenerator:
                     self.logger.info(
                         f'Running test with the following command: "{self.test_command}"'
                     )
-                    stdout, stderr, exit_code, time_of_test_command = Runner.run_command(
+                    (
+                        stdout,
+                        stderr,
+                        exit_code,
+                        time_of_test_command,
+                    ) = Runner.run_command(
                         command=self.test_command, cwd=self.test_command_dir
                     )
                     if exit_code != 0:
                         break
-                
 
                 # Step 3: Check for pass/fail from the Runner object
                 if exit_code != 0:
@@ -584,16 +599,20 @@ class UnitTestGenerator:
                         self.logger.info(
                             "Using the report coverage feature flag to process the coverage report"
                         )
-                        file_coverage_dict = new_coverage_processor.process_coverage_report(
-                            time_of_test_command=time_of_test_command
+                        file_coverage_dict = (
+                            new_coverage_processor.process_coverage_report(
+                                time_of_test_command=time_of_test_command
+                            )
                         )
                         total_lines_covered = 0
                         total_lines_missed = 0
                         total_lines = 0
                         for key in file_coverage_dict:
-                            lines_covered, lines_missed, percentage_covered = (
-                                file_coverage_dict[key]
-                            )
+                            (
+                                lines_covered,
+                                lines_missed,
+                                percentage_covered,
+                            ) = file_coverage_dict[key]
                             total_lines_covered += len(lines_covered)
                             total_lines_missed += len(lines_missed)
                             total_lines += len(lines_covered) + len(lines_missed)
@@ -603,10 +622,12 @@ class UnitTestGenerator:
 
                         new_percentage_covered = total_lines_covered / total_lines
                     else:
-                        _, _, new_percentage_covered = (
-                            new_coverage_processor.process_coverage_report(
-                                time_of_test_command=time_of_test_command
-                            )
+                        (
+                            _,
+                            _,
+                            new_percentage_covered,
+                        ) = new_coverage_processor.process_coverage_report(
+                            time_of_test_command=time_of_test_command
                         )
 
                     if new_percentage_covered <= self.current_coverage:
@@ -675,15 +696,19 @@ class UnitTestGenerator:
 
                 self.current_coverage = new_percentage_covered
 
-
                 for key in coverage_percentages:
                     if key not in self.last_coverage_percentages:
                         self.last_coverage_percentages[key] = 0
-                    if coverage_percentages[key] > self.last_coverage_percentages[key] and key == self.source_file_path.split("/")[-1]:
+                    if (
+                        coverage_percentages[key] > self.last_coverage_percentages[key]
+                        and key == self.source_file_path.split("/")[-1]
+                    ):
                         self.logger.info(
                             f"Coverage for provided source file: {key} increased from {round(self.last_coverage_percentages[key] * 100, 2)} to {round(coverage_percentages[key] * 100, 2)}"
                         )
-                    elif coverage_percentages[key] > self.last_coverage_percentages[key]:
+                    elif (
+                        coverage_percentages[key] > self.last_coverage_percentages[key]
+                    ):
                         self.logger.info(
                             f"Coverage for non-source file: {key} increased from {round(self.last_coverage_percentages[key] * 100, 2)} to {round(coverage_percentages[key] * 100, 2)}"
                         )

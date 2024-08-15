@@ -73,7 +73,9 @@ class CoverageAi:
 
             for generated_test in generated_tests_dict.get("new_tests", []):
                 test_result = self.test_gen.validate_test(
-                    generated_test, generated_tests_dict, self.args.run_tests_multiple_times
+                    generated_test,
+                    generated_tests_dict,
+                    self.args.run_tests_multiple_times,
                 )
                 test_results_list.append(test_result)
 
