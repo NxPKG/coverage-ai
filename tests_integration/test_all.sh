@@ -45,7 +45,7 @@ fi
 
 # C Calculator Example
 sh tests_integration/test_with_docker.sh \
-  --dockerfile "templated_tests/c_cli/Dockerfile" \
+  --docker-image "embeddeddevops/c_cli:latest" \
   --source-file-path "calc.c" \
   --test-file-path "test_calc.c" \
   --code-coverage-report-path "coverage_filtered.info" \
@@ -112,9 +112,9 @@ sh tests_integration/test_with_docker.sh \
   --code-coverage-report-path "coverage/coverage.xml" \
   --model $MODEL
 
-# Python FastAPI Example
+# Python ReadyAPI Example
 sh tests_integration/test_with_docker.sh \
-  --docker-image "embeddeddevops/python_fastapi:latest" \
+  --docker-image "embeddeddevops/python_readyapi:latest" \
   --source-file-path "app.py" \
   --test-file-path "test_app.py" \
   --test-command "pytest --cov=. --cov-report=xml --cov-report=term" \

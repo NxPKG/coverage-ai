@@ -26,7 +26,7 @@ Or run each test individually:
 #### Python Fast API Example
 ```
 sh tests_integration/test_with_docker.sh \
-  --dockerfile "templated_tests/python_fastapi/Dockerfile" \
+  --dockerfile "templated_tests/python_readyapi/Dockerfile" \
   --source-file-path "app.py" \
   --test-file-path "test_app.py" \
   --test-command "pytest --cov=. --cov-report=xml --cov-report=term"

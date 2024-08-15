@@ -1,17 +1,17 @@
-from fastapi import FastAPI, HTTPException
-from datetime import date
+from readyapi import ReadyAPI, HTTPException
+from datetime import date, datetime
 
-app = FastAPI()
+app = ReadyAPI()
 
 
 @app.get("/")
 async def root():
     """
-    A simple function that serves as the root endpoint for the FastAPI application.
+    A simple function that serves as the root endpoint for the ReadyAPI application.
     No parameters are passed into the function.
     Returns a dictionary with a welcome message.
     """
-    return {"message": "Welcome to the FastAPI application!"}
+    return {"message": "Welcome to the ReadyAPI application!"}
 
 
 @app.get("/current-date")

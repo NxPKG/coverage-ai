@@ -2,7 +2,7 @@
 name = "coverage-ai"
 version = "0.0.0" # Placeholder. Will be replaced by dynamic versioning.
 description = "Coverage Ai Tool"
-authors = ["KhulnaSoft <tal.r@khulnasoft.com>"]
+authors = ["KhulnaSoft <info@khulnasoft.com>"]
 license = "Apache 2.0"
 readme = "README.md"
 
@@ -34,7 +34,7 @@ pytest-mock = "^3.14.0"
 pytest-cov = "^5.0.0"
 pytest-asyncio = "^0.23.7"
 pytest-timeout = "^2.3.1"
-fastapi = "^0.111.0"
+readyapi = "^0.111.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning>=1.0.0,<2.0.0"]
